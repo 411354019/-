@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>台灣大型重機市場銷量觀測與選車雷達 (2021-2026)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-slate-700 bg-slate-800/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider bg-red-600 text-white px-2.5 py-1 rounded">Moto Data Lab</span>
+        <h1 class="text-2xl font-bold mt-1">台灣大型重機銷量趨勢與熱銷車款雷達</h1>
+      </div>
+      <p class="text-sm text-slate-400">從「報復性購車巔峰」到「市場寒冬與科技突圍」的數據故事</p>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+    <!-- KPI Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+        <p class="text-slate-400 text-sm">2022 歷史銷量高峰</p>
+        <p class="text-3xl font-extrabold text-amber-400 mt-1">~27,800 <span class="text-base font-normal text-slate-300">輛 / 年</span></p>
+        <p class="text-xs text-slate-400 mt-2">疫情國旅爆發 + 通勤黃牌大羊熱潮</p>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+        <p class="text-slate-400 text-sm">2025-2026 單月平均水位</p>
+        <p class="text-3xl font-extrabold text-rose-400 mt-1">~1,280 <span class="text-base font-normal text-slate-300">輛 / 月</span></p>
+        <p class="text-xs text-slate-400 mt-2">受路權停滯、區間測速與出國潮分流影響</p>
+      </div>
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-5">
+        <p class="text-slate-400 text-sm">市場逆勢突圍關鍵字</p>
+        <p class="text-2xl font-extrabold text-emerald-400 mt-1">通勤羊 / 復古街車 / E-Clutch</p>
+        <p class="text-xs text-slate-400 mt-2">XMAX、CB350、CB650R 穩居排行榜常客</p>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">2021–2025 台灣大型重機年度掛牌趨勢（紅牌 vs 黃牌）</h2>
+          <select id="viewSelect" onchange="updateChart()" class="bg-slate-700 text-sm rounded px-3 py-1.5 border border-slate-600">
+            <option value="all">顯示全部（紅牌＋黃牌）</option>
+            <option value="yellow">僅看黃牌 (251-550cc)</option>
+            <option value="red">僅看紅牌 (>550cc)</option>
+          </select>
+        </div>
+        <canvas id="trendChart" height="140"></canvas>
+      </div>
+
+      <!-- Interactive Selector -->
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-bold mb-2">熱門車款用途快篩器</h2>
+          <p class="text-xs text-slate-400 mb-4">點擊你的騎乘情境，查看近年台灣市場最扛跌的銷售霸主：</p>
+          <div class="flex flex-wrap gap-2 mb-5">
+            <button onclick="filterBikes('commute')" class="px-3 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-lg text-sm hover:bg-amber-500/30">快速道路通勤</button>
+            <button onclick="filterBikes('retro')" class="px-3 py-1.5 bg-sky-500/20 text-sky-300 border border-sky-500/40 rounded-lg text-sm hover:bg-sky-500/30">復古風格漫遊</button>
+            <button onclick="filterBikes('fourcyl')" class="px-3 py-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-lg text-sm hover:bg-rose-500/30">四缸聲浪＋新科技</button>
+          </div>
+          <div id="bikeResult" class="bg-slate-900/80 border border-slate-700 rounded-lg p-4 space-y-2">
+            <h3 class="font-bold text-amber-400 text-base">請選擇上方騎乘情境</h3>
+            <p class="text-sm text-slate-300">透過近年銷售排行數據，幫你找出市場驗證最受歡迎的代表車款。</p>
+          </div>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-700 text-xs text-slate-400">
+          <p class="font-semibold text-slate-300 mb-1">⚠️ 本觀測工具做不到的三件事：</p>
+          <ul class="list-disc list-inside space-y-1">
+            <li>無法幫你爭取開放重機上國道</li>
+            <li>無法替你決定要買四缸還是雙缸</li>
+            <li>無法消除台 9 線與山路的區間測速</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const dataYellow = [17200, 18500, 14800, 10200, 9100];
+    const dataRed = [9100, 9300, 8100, 6300, 5800];
+    
+    let chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['2021', '2022 (高峰)', '2023', '2024', '2025'],
+        datasets: [
+          { label: '黃牌重機 (251-550cc)', data: dataYellow, backgroundColor: '#f59e0b' },
+          { label: '紅牌重機 (>550cc)', data: dataRed, backgroundColor: '#ef4444' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#cbd5e1' } } },
+        scales: {
+          x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+          y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+        }
+      }
+    });
+
+    function updateChart() {
+      const val = document.getElementById('viewSelect').value;
+      chart.data.datasets[0].hidden = (val === 'red');
+      chart.data.datasets[1].hidden = (val === 'yellow');
+      chart.update();
+    }
+
+    const bikes = {
+      commute: {
+        title: "🏆 黃牌大羊霸主：Yamaha XMAX / Aeon STR 300 / SYM TTLBT 508",
+        desc: "在整體市場降溫下，具備高實用性與路權優勢的黃牌速克達仍是銷量支柱。XMAX 多次蟬聯單月破百台冠軍，STR 300 則以短軸距跨界靈活度搶佔通勤市場。"
+      },
+      retro: {
+        title: "🏆 復古街車長青樹：Honda CB350 / Triumph Speed 400",
+        desc: "平易近人的售價與濃厚經典街車外型，讓 Honda CB350 在 2025 年依然穩居單月銷售前五名，成為新手入坑檔車與風格騎士的首選。"
+      },
+      fourcyl: {
+        title: "🏆 紅牌四缸不敗神話：Honda CB650R / CBR650R (E-Clutch)",
+        desc: "紅牌級距唯一長年霸榜的四缸街跑車！導入 E-Clutch 電子離合器技術後，大幅降低市區走停的左手負擔，在市場寒冬中依然每月穩定交車破百輛。"
+      }
+    };
+
+    function filterBikes(type) {
+      const box = document.getElementById('bikeResult');
+      box.innerHTML = `<h3 class="font-bold text-amber-400 text-base">${bikes[type].title}</h3>
+                       <p class="text-sm text-slate-300 mt-1">${bikes[type].desc}</p>`;
+    }
+  </script>
+</body>
+</html>
